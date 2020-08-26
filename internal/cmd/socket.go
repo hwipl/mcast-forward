@@ -38,6 +38,11 @@ func runSocketLoop() {
 			continue
 		}
 
+		// only handle packets from configured source addresses
+		if !saddrs.contains(header.Src.String()) {
+			continue
+		}
+
 		// only handle traffic to configured udp destination ports
 		destPort := binary.BigEndian.Uint16(payload[2:4])
 		if !dports.contains(strconv.FormatUint(uint64(destPort), 10)) {

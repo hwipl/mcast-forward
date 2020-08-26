@@ -12,6 +12,9 @@ var (
 	// mcasts is a list of accepted multicast addresses
 	mcasts = newAddrs()
 
+	// saddrs is a list of accepted source addresses
+	saddrs = newAddrs()
+
 	// dports is a list of accepted destination ports
 	dports = newAddrs()
 
