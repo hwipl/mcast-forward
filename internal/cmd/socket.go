@@ -32,6 +32,11 @@ func runSocketLoop() {
 			log.Fatal(err)
 		}
 
+		// only handle packets to configured mcast addresses
+		if !mcasts.contains(header.Dst.String()) {
+			continue
+		}
+
 		// print packet info
 		destPort := binary.BigEndian.Uint16(payload[2:4])
 		srcPort := binary.BigEndian.Uint16(payload[0:2])
