@@ -72,8 +72,8 @@ func parseDests(dest string) {
 
 // parseCommandLine parses the command line arguments
 func parseCommandLine() {
-	var addresses = "224.0.0.1"
-	var ports = "6112"
+	var addresses = "224.0.0.251"
+	var ports = "5353"
 	var dest = ""
 
 	// set command line arguments
