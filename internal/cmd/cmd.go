@@ -79,12 +79,13 @@ func parseCommandLine() {
 	// set command line arguments
 	flag.StringVar(&addresses, "a", addresses,
 		"only forward packets with this comma-separated list "+
-			"of\nmulticast `addresses`, e.g., 224.0.0.1,224.0.0.2")
+			"of\nmulticast destination `addresses`, e.g.,\n"+
+			"224.0.0.1,224.0.0.2")
 	flag.StringVar(&ports, "p", ports,
 		"only forward packets with this comma-separated list "+
 			"of\ndestination `ports`, e.g., 1024,32000")
 	flag.StringVar(&dest, "d", dest, "forward multicast packets to "+
-		"this comma-separated list of `IPs`,\n"+
+		"this comma-separated list of\n`addresses`, "+
 		"e.g., \"192.168.1.1,192.168.1.2\"")
 	flag.Parse()
 
