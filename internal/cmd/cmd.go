@@ -35,6 +35,7 @@ func parseAddresses(addresses string) {
 
 		// add address to accepted multicast addresses
 		mcasts.add(a)
+		log.Println("Accepting multicast address:", a)
 	}
 }
 
@@ -48,11 +49,13 @@ func parsePorts(ports string) {
 
 		// add port to accepted ports
 		dports.add(p)
+		log.Println("Accepting destination port: ", p)
 	}
 }
 
 func parseDests(dest string) {
 	for _, d := range strings.Split(dest, ",") {
+		// check if destination ip is valid
 		if d == "" {
 			continue
 		}
@@ -60,7 +63,10 @@ func parseDests(dest string) {
 		if dst == nil {
 			log.Fatal("invalid destination IP: ", d)
 		}
+
+		// add destination ip to list of destinations
 		dests = append(dests, dst)
+		log.Println("Forwarding to destination:  ", d)
 	}
 }
 
