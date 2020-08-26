@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"log"
 	"net"
+	"strconv"
 
 	"golang.org/x/net/ipv4"
 )
@@ -37,8 +38,13 @@ func runSocketLoop() {
 			continue
 		}
 
-		// print packet info
+		// only handle traffic to configured udp destination ports
 		destPort := binary.BigEndian.Uint16(payload[2:4])
+		if !dports.contains(strconv.FormatUint(uint64(destPort), 10)) {
+			continue
+		}
+
+		// print packet info
 		srcPort := binary.BigEndian.Uint16(payload[0:2])
 		log.Printf("Got packet: %s:%d -> %s:%d\n", header.Src,
 			srcPort, header.Dst, destPort)
