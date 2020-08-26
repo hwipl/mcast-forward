@@ -42,6 +42,26 @@ func parseAddresses(addresses string) {
 	}
 }
 
+func parseSources(sources string) {
+	for _, s := range strings.Split(sources, ",") {
+		// check if ip address is valid
+		ip := net.ParseIP(s)
+		if ip == nil {
+			log.Fatal("cannot parse address ", s)
+		}
+		if ip.To4() == nil {
+			log.Fatal("address ", s, " is not an IPv4 address")
+		}
+		if ip.IsMulticast() {
+			log.Fatal("address ", s, " is a multicast address")
+		}
+
+		// add address to accepted multicast addresses
+		saddrs.add(s)
+		log.Println("Accepting source address:   ", s)
+	}
+}
+
 func parsePorts(ports string) {
 	for _, p := range strings.Split(ports, ",") {
 		// check if port is valid
@@ -76,6 +96,7 @@ func parseDests(dest string) {
 // parseCommandLine parses the command line arguments
 func parseCommandLine() {
 	var addresses = "224.0.0.251"
+	var sources = ""
 	var ports = "5353"
 	var dest = ""
 
@@ -84,6 +105,9 @@ func parseCommandLine() {
 		"only forward packets with this comma-separated list "+
 			"of\nmulticast destination `addresses`, e.g.,\n"+
 			"224.0.0.1,224.0.0.2")
+	flag.StringVar(&sources, "s", sources,
+		"only forward packets with this comma-separated list "+
+			"of\nsource `addresses`, e.g., 192.168.1.1,172.16.1.1")
 	flag.StringVar(&ports, "p", ports,
 		"only forward packets with this comma-separated list "+
 			"of\ndestination `ports`, e.g., 1024,32000")
@@ -97,6 +121,12 @@ func parseCommandLine() {
 		log.Fatal("no multicast addresses specified")
 	}
 	parseAddresses(addresses)
+
+	// parse accepted source addresses
+	if sources == "" {
+		log.Fatal("no source addresses specified")
+	}
+	parseSources(sources)
 
 	// parse accepted ports
 	if ports == "" {
