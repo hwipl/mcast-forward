@@ -51,10 +51,24 @@ func parsePorts(ports string) {
 	}
 }
 
+func parseDests(dest string) {
+	for _, d := range strings.Split(dest, ",") {
+		if d == "" {
+			continue
+		}
+		dst := newDest(d)
+		if dst == nil {
+			log.Fatal("invalid destination IP: ", d)
+		}
+		dests = append(dests, dst)
+	}
+}
+
 // parseCommandLine parses the command line arguments
 func parseCommandLine() {
 	var addresses = "224.0.0.1"
 	var ports = "6112"
+	var dest = ""
 
 	// set command line arguments
 	flag.StringVar(&addresses, "a", addresses,
@@ -63,6 +77,9 @@ func parseCommandLine() {
 	flag.StringVar(&ports, "p", ports,
 		"only forward packets with this comma-separated list "+
 			"of\ndestination `ports`, e.g., 1024,32000")
+	flag.StringVar(&dest, "d", dest, "forward multicast packets to "+
+		"this comma-separated list of `IPs`,\n"+
+		"e.g., \"192.168.1.1,192.168.1.2\"")
 	flag.Parse()
 
 	// parse accepted multicast addresses
@@ -76,6 +93,12 @@ func parseCommandLine() {
 		log.Fatal("no ports specified")
 	}
 	parsePorts(ports)
+
+	// parse destination addresses
+	if dest == "" {
+		log.Fatal("no destination IP specified")
+	}
+	parseDests(dest)
 }
 
 // Run is the main entry point
