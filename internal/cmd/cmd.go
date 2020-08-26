@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"net"
+	"strconv"
 	"strings"
 )
 
@@ -37,6 +38,19 @@ func parseAddresses(addresses string) {
 	}
 }
 
+func parsePorts(ports string) {
+	for _, p := range strings.Split(ports, ",") {
+		// check if port is valid
+		_, err := strconv.ParseUint(p, 10, 16)
+		if err != nil {
+			log.Fatal("error parsing port ", p, ": ", err)
+		}
+
+		// add port to accepted ports
+		dports.add(p)
+	}
+}
+
 // parseCommandLine parses the command line arguments
 func parseCommandLine() {
 	var addresses = "224.0.0.1"
@@ -46,11 +60,19 @@ func parseCommandLine() {
 	flag.StringVar(&addresses, "a", addresses,
 		"only forward packets with this comma-separated list "+
 			"of\nmulticast `addresses`, e.g., 224.0.0.1,224.0.0.2")
+	flag.StringVar(&ports, "p", ports,
+		"only forward packets with this comma-separated list "+
+			"of\ndestination `ports`, e.g., 1024,32000")
 	flag.Parse()
 
 	// parse ip addresses
 	if addresses != "" {
 		parseAddresses(addresses)
+	}
+
+	// parse ports
+	if ports != "" {
+		parsePorts(ports)
 	}
 }
 
