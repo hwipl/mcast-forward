@@ -48,5 +48,19 @@ func runSocketLoop() {
 		srcPort := binary.BigEndian.Uint16(payload[0:2])
 		log.Printf("Got packet: %s:%d -> %s:%d\n", header.Src,
 			srcPort, header.Dst, destPort)
+
+		// remove udp header checksum in forwarded packets
+		binary.BigEndian.PutUint16(payload[6:8], 0)
+
+		// forward packet to configured destination IPs
+		for _, d := range dests {
+			// set new source and destination ip and send packet
+			header.Src = d.srcIP
+			header.Dst = d.ip
+			err = raw.WriteTo(header, payload, nil)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
 	}
 }
