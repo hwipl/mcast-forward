@@ -65,15 +65,17 @@ func parseCommandLine() {
 			"of\ndestination `ports`, e.g., 1024,32000")
 	flag.Parse()
 
-	// parse ip addresses
-	if addresses != "" {
-		parseAddresses(addresses)
+	// parse accepted multicast addresses
+	if addresses == "" {
+		log.Fatal("no multicast addresses specified")
 	}
+	parseAddresses(addresses)
 
-	// parse ports
-	if ports != "" {
-		parsePorts(ports)
+	// parse accepted ports
+	if ports == "" {
+		log.Fatal("no ports specified")
 	}
+	parsePorts(ports)
 }
 
 // Run is the main entry point
